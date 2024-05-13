@@ -7,6 +7,7 @@ use App\Models\Client;
 
 class ClientController extends Controller
 {
+    private $columns = ['clientName','phone', 'email','website'];
     /**
      * Display a listing of the resource.
      */
@@ -38,20 +39,19 @@ class ClientController extends Controller
         return 'Inserted Successfully';
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $client = Client::findOrFail($id);
+        return view('showClient',compact('client'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display the specified resource.
      */
     public function edit(string $id)
     {
-        //
+        $client = Client::findOrFail($id);
+        return view('editClient',compact('client'));
     }
 
     /**
@@ -59,14 +59,17 @@ class ClientController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        Client::where('id',$id)->update($request->only($this->columns));
+        return redirect('clients');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->id;
+        Client::where('id',$id)->delete();
+        return redirect('clients');
     }
 }

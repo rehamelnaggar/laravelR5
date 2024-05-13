@@ -10,6 +10,10 @@ Route::get('test20',[MyController::class,'my_data']);
 Route::post('insertClient',[ClientController::class,'store'])->name('insertClient');
 Route::get('addClient',[ClientController::class,'create'])->name('addClient');
 Route::get('/clients', [ClientController::class, 'index'])->name('clients');
+Route::get('editClients/{id}',[ClientController::class, 'edit'])->name('editClients');
+Route::put('updateClients/{id}',[ClientController::class, 'update'])->name('updateClients');
+Route::get('showClients/{id}',[ClientController::class, 'show'])->name('showClient');
+Route::delete('delClient',[ClientController::class, 'destroy'])->name('delClient');
 
 Route::post('insertStudent',[StudentController::class,'store'])->name('insertStudent');
 Route::get('addStudent',[StudentController::class,'create'])->name('addStudent');
