@@ -7,6 +7,7 @@ use App\Models\Student;
 
 class StudentController extends Controller
 {
+    private $columns = ['studentName','age'];
     /**
      * Display a listing of the resource.
      */
@@ -41,15 +42,16 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
+        $student = Student::findOrFail($id);
+        return view('showStudent', compact('student'));    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        //
+        $student = Student::findOrFail($id);
+        return view('editStudent', compact('student'));
     }
 
     /**
@@ -57,14 +59,17 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        Student::where('id',$id)->update($request->only($this->columns));
+        return redirect()->route('students', $id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy(Request $request)
+{
+    $id = $request->id;
+    Student::where('id', $id)->delete();
+    return redirect('students');
+}
 }

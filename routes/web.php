@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\StudentController;
+use App\Models\Student;
 
 Route::get('test20',[MyController::class,'my_data']);
 
@@ -17,7 +18,11 @@ Route::delete('delClient',[ClientController::class, 'destroy'])->name('delClient
 
 Route::post('insertStudent',[StudentController::class,'store'])->name('insertStudent');
 Route::get('addStudent',[StudentController::class,'create'])->name('addStudent');
-Route::get('/Students',[StudentController::class,'index'])->name('Students');
+Route::get('/students', [StudentController::class, 'index'])->name('students');
+Route::get('editStudents/{id}',[StudentController::class, 'edit'])->name('editStudents');
+Route::put('updateStudents/{id}',[StudentController::class, 'update'])->name('updateStudents');
+Route::get('showStudents/{id}',[StudentController::class, 'show'])->name('showStudent');
+Route::delete('delStudent', [StudentController::class, 'destroy'])->name('delStudent');
 
 Route::get('/', function () {
     return view('welcome');
