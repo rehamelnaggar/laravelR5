@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('studentName',100);
             $table->integer('age');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -30,12 +31,20 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $student = new Student();
-        $student->studentName = $request->studentName;
-        $student->age = $request->age;
-        $student->save();
-        return 'Inserted Successfully';
+        //$student = new Student();
+        //$student->studentName = $request->studentName;
+        //$student->age = $request->age;
+       //$student->save();
+        //return 'Inserted Successfully';
+        $data = $request->validate([
+            'studentName' => 'required|max:100|min:5',
+            'age' => 'integer|min:1',
+        ]);
+        Student::create($data);
+        return redirect('students');
     }
+
+    
 
     /**
      * Display the specified resource.
@@ -59,8 +68,13 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        Student::where('id',$id)->update($request->only($this->columns));
-        return redirect()->route('students', $id);
+        $data = $request->validate([
+            'studentName' => 'required|max:100|min:5',
+            'age' => 'integer|min:1',
+        ]);
+
+        Student::where('id', $id)->update($data);
+        return redirect('students')->with('success', 'Student updated successfully.');
     }
 
     /**
@@ -72,4 +86,31 @@ class StudentController extends Controller
     Student::where('id', $id)->delete();
     return redirect('students');
 }
+/**
+     *trash
+     */
+    public function trash()
+    {
+        $trash = Student::onlyTrashed()->get();
+        return view('trashStudents', compact('trash'));
+    }
+    
+/**
+     *Restore
+     */
+    public function restore(string $id)
+    {
+        
+        Student::where('id',$id)->restore();
+        return redirect('students');
+    }
+      /**
+     * Force Delete
+     */
+    public function forceDelete(Request $request)
+    {
+        $id = $request->id;
+        Student::where('id',$id)->forceDelete();
+        return redirect('trashStudents');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
@@ -30,13 +31,21 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $client = new Client();
-        $client->clientName = $request->clientName;
-        $client->phone = $request->phone;
-        $client->email = $request->email;
-        $client->website = $request->website;
-        $client->save();
-        return 'Inserted Successfully';
+        //$client = new Client();
+        //$client->clientName = $request->clientName;
+        //$client->phone = $request->phone;
+        //$client->email = $request->email;
+        //$client->website = $request->website;
+        //$client->save();
+        $data = $request->validate([
+            'clientName' => 'required|max:100|min:5',
+            'phone' => 'required|min:11',
+            'email' => 'required|email:rfc',
+            'website' => 'required',
+
+        ]);
+        Client::create($data);
+        return redirect('clients');
     }
 
     public function show(string $id)
@@ -59,10 +68,16 @@ class ClientController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        Client::where('id',$id)->update($request->only($this->columns));
-        return redirect('clients');
-    }
+        $data = $request->validate([
+            'clientName' => 'required|max:100|min:5',
+            'phone' => 'required|min:11',
+            'email' => 'required|email:rfc',
+            'website' => 'required',
+        ]);
 
+        Client::where('id', $id)->update($data);
+        return redirect('clients')->with('success', 'Client updated successfully.');
+    }
     /**
      * Remove the specified resource from storage.
      */
@@ -71,5 +86,32 @@ class ClientController extends Controller
         $id = $request->id;
         Client::where('id',$id)->delete();
         return redirect('clients');
+    }
+    /**
+     *trash
+     */
+    public function trash()
+    {
+        $trash = Client::onlyTrashed()->get();
+        return view('trashClients', compact('trash'));
+    }
+    
+/**
+     *Restore
+     */
+    public function restore(string $id)
+    {
+        
+        Client::where('id',$id)->restore();
+        return redirect('clients');
+    }
+     /**
+     * Force Delete
+     */
+    public function forceDelete(Request $request)
+    {
+        $id = $request->id;
+        Client::where('id',$id)->forceDelete();
+        return redirect('trashClients');
     }
 }
