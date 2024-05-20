@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Client extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['clientName','phone', 'email','website'];
+    protected $fillable = ['clientName','phone', 'email','website','city','active','image'];
 
 }

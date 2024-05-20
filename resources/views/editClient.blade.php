@@ -25,38 +25,39 @@
 <h2>Edit Client</h2>
 
 <form action="{{ route('updateClients', $client->id) }}" method="POST">
-  @csrf
-  @method('put')
-  <label for="clientName">client name:</label><br>
-  <p style="color:red">
-  @error('clientName')
-  {{ $message }}
-  @enderror
-  </p>
-  <input type="text" id="clientName" name="clientName" class="form-control" value="{{ $client->clientName}}" ><br>
-  <label for="phone">Phone:</label><br>
-  <p style="color:red">
-  @error('phone')
-  {{ $message }}
-  @enderror
-  </p>
-  <input type="text" id="phone" name="phone" class="form-control" value="{{ $client->phone}}"><br><br>
-  <label for="email">email:</label><br>
-  <p style="color:red">
-  @error('email')
-  {{ $message }}
-  @enderror
-  </p>
-  <input type="email" id="email" name="email" class="form-control" value="{{ $client->email}}" ><br><br>
-  <label for="website">website:</label><br>
-  <p style="color:red">
-  @error('website')
-  {{ $message }}
-  @enderror
-  </p>
-  <input type="text" id="website" name="website" class="form-control" value="{{ $client->website}}"><br><br>
-  <input type="submit" value="Submit">
-</form> 
+    @csrf
+    @method('put')
+    <label for="clientName">Client name:</label><br>
+    <input type="text" id="clientName" name="clientName" class="form-control" value="{{ $client->clientName }}"><br>
+    <label for="phone">Phone:</label><br>
+    <input type="text" id="phone" name="phone" class="form-control" value="{{ $client->phone }}"><br><br>
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" class="form-control" value="{{ $client->email }}"><br><br>
+    <label for="website">website:</label><br>
+    <input type="text" id="website" name="website" class="form-control" value="{{ $client->website }}"><br><br>
+
+    <label for="city">City:</label><br>
+    <p style="color: red">
+      @error('city')
+        {{ $message }}
+      @enderror
+    </p>
+    <select name="city" id="city" class="form-control">
+      <option value="">Please Select City</option>
+      <option value="Cairo" {{ old('city') == 'Cairo' ? 'selected' : '' }}>Cairo</option>
+      <option value="Giza" {{ old('city') == 'Giza' ? 'selected' : '' }}>Giza</option>
+      <option value="Alex" {{ old('city') == 'Alex' ? 'selected' : '' }}>Alex</option>
+    </select>
+    <br><br>
+    <label for="active">Active:</label><br>
+    <input type="checkbox" id="active" name="active" class="form-check-input" {{ old('active') ? 'checked' : '' }}><br>
+
+    <p><img src="{{ asset('assets/images/' . $client->image)  }}" alt=""></p>
+    <label for="image">Image:</label><br>
+    <input type="file" id="image" name="image" class="form-control"><br><br>
+
+    <input type="submit" value="Submit">
+  </form> 
 </div>
 
 <p>If you click the "Submit" button, the form-data will be sent to a page called "/action_page.php".</p>

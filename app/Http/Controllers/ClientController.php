@@ -37,13 +37,23 @@ class ClientController extends Controller
         //$client->email = $request->email;
         //$client->website = $request->website;
         //$client->save();
+        $massages = $this ->errMsg();
         $data = $request->validate([
             'clientName' => 'required|max:100|min:5',
             'phone' => 'required|min:11',
             'email' => 'required|email:rfc',
             'website' => 'required',
+            'city' => 'required|max:30',
+        ],$massages);
 
-        ]);
+        $imgExt = $request->image->getClientOriginalExtension();
+        $fileName = time() . '.' . $imgExt;
+        $path = 'assets/images';
+        $request->image->move($path, $fileName);
+
+        $data['image'] = $fileName;
+
+        $data['active'] = isset($request->active);
         Client::create($data);
         return redirect('clients');
     }
@@ -73,8 +83,11 @@ class ClientController extends Controller
             'phone' => 'required|min:11',
             'email' => 'required|email:rfc',
             'website' => 'required',
+            'city' => 'required|max:30',
+            'image' => 'required',
         ]);
 
+        $data['active'] = isset($request->active);
         Client::where('id', $id)->update($data);
         return redirect('clients')->with('success', 'Client updated successfully.');
     }
@@ -114,4 +127,17 @@ class ClientController extends Controller
         Client::where('id',$id)->forceDelete();
         return redirect('trashClients');
     }
+    //error custom massages
+public function errMsg(){
+    return [
+        'clientName.required' =>'The client name is missed, please insert',
+        'clientName.min' =>'length less than 5, please insert more chars',
+        'phone.required' =>'The phone is missed, please insert',
+        'phone.min' =>'length less than 11, please insert more chars',
+        'email.required' =>'The email is missed, please insert',
+        'website.required' =>'The website is missed, please insert',
+        'city.required' =>'The city is missed, please selected',
+        
+    ];
+}
 }
