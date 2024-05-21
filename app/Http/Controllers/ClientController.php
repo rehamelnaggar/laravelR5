@@ -77,20 +77,43 @@ class ClientController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $data = $request->validate([
-            'clientName' => 'required|max:100|min:5',
-            'phone' => 'required|min:11',
-            'email' => 'required|email:rfc',
-            'website' => 'required',
-            'city' => 'required|max:30',
-            'image' => 'required',
-        ]);
+{
+    
+    $data = $request->validate([
+        'clientName' => 'required|max:100|min:5',
+        'phone' => 'required|min:11',
+        'email' => 'required|email:rfc',
+        'website' => 'required',
+        'city' => 'required|max:30',
+        'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        $data['active'] = isset($request->active);
-        Client::where('id', $id)->update($data);
-        return redirect('clients')->with('success', 'Client updated successfully.');
+    $data['active'] = isset($request->active);
+
+    $client = Client::findOrFail($id);
+    
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('assets/images'), $imageName);
+
+        $data['image'] = $imageName;
+
+        if ($client->image) {
+            $oldImagePath = public_path('assets/images') . '/' . $client->image;
+        if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+        }
+    } else {
+        $data['image'] = $client->image;
     }
+
+    $client->update($data);
+
+    return redirect('clients')->with('success', 'Client updated successfully.');
+}
+    
     /**
      * Remove the specified resource from storage.
      */
