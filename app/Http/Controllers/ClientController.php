@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage; // إضافة استخدام الـ Storage
+use App\Traits\Traits\UploadFile;
 
 class ClientController extends Controller
 {
-    private $columns = ['clientName','phone', 'email','website'];
+    use UploadFile;
+
+    private $columns = ['clientName', 'phone', 'email', 'website'];
+
     /**
      * Display a listing of the resource.
      */
@@ -31,25 +35,16 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //$client = new Client();
-        //$client->clientName = $request->clientName;
-        //$client->phone = $request->phone;
-        //$client->email = $request->email;
-        //$client->website = $request->website;
-        //$client->save();
-        $massages = $this ->errMsg();
+        $messages = $this->errMsg();
         $data = $request->validate([
             'clientName' => 'required|max:100|min:5',
             'phone' => 'required|min:11',
             'email' => 'required|email:rfc',
             'website' => 'required',
             'city' => 'required|max:30',
-        ],$massages);
+        ], $messages);
 
-        $imgExt = $request->image->getClientOriginalExtension();
-        $fileName = time() . '.' . $imgExt;
-        $path = 'assets/images';
-        $request->image->move($path, $fileName);
+        $fileName = $this->uploadImage($request->file('image'), 'assets/images');
 
         $data['image'] = $fileName;
 
@@ -61,7 +56,7 @@ class ClientController extends Controller
     public function show(string $id)
     {
         $client = Client::findOrFail($id);
-        return view('showClient',compact('client'));
+        return view('showClient', compact('client'));
     }
 
     /**
@@ -70,97 +65,97 @@ class ClientController extends Controller
     public function edit(string $id)
     {
         $client = Client::findOrFail($id);
-        return view('editClient',compact('client'));
+        return view('editClient', compact('client'));
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-{
-    
-    $data = $request->validate([
-        'clientName' => 'required|max:100|min:5',
-        'phone' => 'required|min:11',
-        'email' => 'required|email:rfc',
-        'website' => 'required',
-        'city' => 'required|max:30',
-        'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+    {
+        $data = $request->validate([
+            'clientName' => 'required|max:100|min:5',
+            'phone' => 'required|min:11',
+            'email' => 'required|email:rfc',
+            'website' => 'required',
+            'city' => 'required|max:30',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $data['active'] = isset($request->active);
+        $client = Client::findOrFail($id);
 
-    $client = Client::findOrFail($id);
-    
-    if ($request->hasFile('image')) {
-        $image = $request->file('image');
-        $imageName = time() . '.' . $image->getClientOriginalExtension();
-        $image->move(public_path('assets/images'), $imageName);
+        if ($request->hasFile('image')) {
+            $fileName = $this->uploadImage($request->file('image'), 'assets/images');
 
-        $data['image'] = $imageName;
-
-        if ($client->image) {
-            $oldImagePath = public_path('assets/images') . '/' . $client->image;
-        if (file_exists($oldImagePath)) {
-                unlink($oldImagePath);
+            if ($client->image) {
+                $this->deleteImage('assets/images/' . $client->image);
             }
+
+            $data['image'] = $fileName;
+        } else {
+            $data['image'] = $client->image;
         }
-    } else {
-        $data['image'] = $client->image;
+
+        $data['active'] = $request->has('active');
+        $client->update($data);
+
+        return redirect('clients')->with('success', 'Client updated successfully.');
     }
 
-    $client->update($data);
+    private function deleteImage($path)
+    {
+        Storage::disk('public')->delete($path);
+    }
 
-    return redirect('clients')->with('success', 'Client updated successfully.');
-}
-    
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request)
     {
         $id = $request->id;
-        Client::where('id',$id)->delete();
+        Client::where('id', $id)->delete();
         return redirect('clients');
     }
+
     /**
-     *trash
+     * Trash
      */
     public function trash()
     {
         $trash = Client::onlyTrashed()->get();
         return view('trashClients', compact('trash'));
     }
-    
-/**
-     *Restore
+
+    /**
+     * Restore
      */
     public function restore(string $id)
     {
-        
-        Client::where('id',$id)->restore();
+        Client::where('id', $id)->restore();
         return redirect('clients');
     }
-     /**
+
+    /**
      * Force Delete
      */
     public function forceDelete(Request $request)
     {
         $id = $request->id;
-        Client::where('id',$id)->forceDelete();
+        Client::where('id', $id)->forceDelete();
         return redirect('trashClients');
     }
-    //error custom massages
-public function errMsg(){
-    return [
-        'clientName.required' =>'The client name is missed, please insert',
-        'clientName.min' =>'length less than 5, please insert more chars',
-        'phone.required' =>'The phone is missed, please insert',
-        'phone.min' =>'length less than 11, please insert more chars',
-        'email.required' =>'The email is missed, please insert',
-        'website.required' =>'The website is missed, please insert',
-        'city.required' =>'The city is missed, please selected',
-        
-    ];
-}
+
+    // Error custom messages
+    public function errMsg()
+    {
+        return [
+            'clientName.required' => 'The client name is missed, please insert',
+            'clientName.min' => 'Length less than 5, please insert more chars',
+            'phone.required' => 'The phone is missed, please insert',
+            'phone.min' => 'Length less than 11, please insert more chars',
+            'email.required' => 'The email is missed, please insert',
+            'website.required' => 'The website is missed, please insert',
+            'city.required' => 'The city is missed, please selected',
+        ];
+    }
 }
