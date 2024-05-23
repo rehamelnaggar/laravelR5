@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
-use Illuminate\Support\Facades\Storage; // إضافة استخدام الـ Storage
+use Illuminate\Support\Facades\Storage; 
 use App\Traits\Traits\UploadFile;
 
 class ClientController extends Controller
