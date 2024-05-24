@@ -43,8 +43,7 @@
           <td>{{ $client->active ? "Yes" : "No" }}</td>
           <td><a href="{{ route('editClients', $client->id) }}" class="btn btn-warning">Edit</a></td>
           <td><a href="{{ route('showClient', $client->id) }}" class="btn btn-info">Show</a></td>
-          <td>
-            <form action="{{ route('delClient') }}" method="post">
+          <td><form action="{{ route('delClient') }}" method="post">
               @csrf
               @method('DELETE')
               <input type="hidden" value="{{ $client->id }}" name="id">

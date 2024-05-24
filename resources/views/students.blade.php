@@ -17,8 +17,11 @@
       <tr>
         <th>Student Name</th>
         <th>Age</th>
+        <th>Image</th>
+        <th>Active</th>
         <th>Edit</th>
         <th>Show</th>
+        <th>Delete</th>
       </tr>
     </thead>
     <tbody>
@@ -26,14 +29,21 @@
       <tr>
         <td>{{ $student->studentName }}</td>
         <td>{{ $student->age }}</td>
-        <td><a href="{{ route('editStudents',$student->id)}}">Edit</a></td>
-        <td><a href="{{ route('showStudent',$student->id)}}">Show</a></td>
         <td>
-        <form action="{{ route('delStudent')}}" method="post">
+            @if ($student->image)
+              <img src="{{ asset('assets/images/' . $student->image) }}" alt="Student Image" width="50">
+            @else
+              No Image
+            @endif
+          </td>
+          <td>{{ $student->active ? "Yes" : "No" }}</td>
+          <td><a href="{{ route('editStudents', $student->id) }}" class="btn btn-warning">Edit</a></td>
+          <td><a href="{{ route('showStudent', $student->id) }}" class="btn btn-info">Show</a></td>
+          <td><form action="{{ route('delStudent')}}" method="post">
           @csrf
           @method('Delete')
             <input type="hidden" value="{{ $student->id }}" name="id">
-            <input type="submit" onclick="return confirm('Are you sure to delete?')" value="Delete">
+            <input type="submit" onclick="return confirm('Are you sure to delete?')" value="Delete"class="btn btn-danger">
        </form>
         </td>
       </tr>

@@ -68,7 +68,7 @@
                 </select>
 
     <br><br>
-    <label for="active">Active:</label><br>
+    <label for="active">Active:</label>
     <input type="checkbox" id="active" name="active" class="form-check-input" {{ old('active') ? 'checked' : '' }}><br>
     <label for="image">Image:</label><br>
     <input type="file" id="image" name="image" class="form-control"><br><br>
