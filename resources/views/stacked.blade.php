@@ -9,5 +9,5 @@
 @endpush
 
 @prepend('submenu')
-<li> <a href="/">Test page4</a></li>
+<li> <a href="/">Test page1</a></li>
 @endprepend
