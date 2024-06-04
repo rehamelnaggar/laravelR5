@@ -32,7 +32,7 @@ Route::delete('forceDeleteStudent', [StudentController::class, 'forceDelete'])->
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('stacked');
 });
 
 Route::get('reham/{id?}', function($id = 0){
