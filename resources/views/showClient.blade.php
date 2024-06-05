@@ -14,6 +14,8 @@
     <hr>
     <h1><strong>Client: </strong>{{ $client->website }}</h1>
     <hr>
+    <h1><strong>Client: </strong>{{ $client->address }}</h1>
+    <hr>
     <p><img src="{{ asset('assets/images/'.$client->image) }}" alt=""></p>
 
 </body>

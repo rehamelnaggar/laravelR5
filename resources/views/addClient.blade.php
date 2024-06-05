@@ -53,7 +53,14 @@
   {{ $message }}
   @enderror
   </p>
-  <input type="text" id="website" name="website"  value="{{ old('website') }}"><br><br>
+  <input type="text" id="address" name="address"  value="{{ old('address') }}"><br><br>
+  <label for="address">address</label><br>
+  <p style="color:red">
+  @error('address')
+  {{ $message }}
+  @enderror
+  </p>
+  <input type="text" id="address" name="address"  value="{{ old('address') }}"><br><br>
   <label for="city">City:</label><br>
   <p style="color:red">
   @error('city')

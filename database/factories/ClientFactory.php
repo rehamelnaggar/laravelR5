@@ -21,7 +21,10 @@ class ClientFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'website' => $this->faker->url,
             'city' => $this->faker->city,
-            'active' => $this->faker->boolean(80), 
+            'address' => $this->faker->address,
+            'active' => $this->faker->boolean(80),
+            'image' => 'default.png', 
         ];
+    
     }
 }

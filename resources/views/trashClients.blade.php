@@ -19,6 +19,7 @@
         <th>Phone</th>
         <th>Email</th>
         <th>Website</th>
+        <th>address</th>
         <th>Restore</th>
         <th>Delete</th>
       </tr>
@@ -30,6 +31,7 @@
         <td>{{ $client->phone }}</td>
         <td>{{ $client->email }}</td>
         <td>{{ $client->website }}</td>
+        <td>{{ $client->address }}</td>
         <td><a href="{{ route('restoreClients',$client->id)}}">Restore</a></td>
         <td>
         <form action="{{ route('foceDelete')}}" method="post">

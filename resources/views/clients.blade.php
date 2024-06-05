@@ -19,6 +19,7 @@
           <th>Phone</th>
           <th>Email</th>
           <th>Website</th>
+          <th>address</th>
           <th>Image</th>
           <th>Active</th>
           <th>Edit</th>
@@ -33,6 +34,7 @@
           <td>{{ $client->phone }}</td>
           <td>{{ $client->email }}</td>
           <td>{{ $client->website }}</td>
+          <td>{{ $client->address }}</td>
           <td>
             @if ($client->image)
               <img src="{{ asset('assets/images/' . $client->image) }}" alt="Client Image" width="50">
