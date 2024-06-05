@@ -23,7 +23,7 @@ class ClientFactory extends Factory
             'city' => $this->faker->city,
             'address' => $this->faker->address,
             'active' => $this->faker->boolean(80),
-            'image' => 'default.png', 
+            'image' => $this->faker->image('public/assets/images', 640, 480, null, false),
         ];
     
     }

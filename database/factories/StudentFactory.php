@@ -19,7 +19,7 @@ class StudentFactory extends Factory
             'studentName' => $this->faker->name,
             'age' => $this->faker->numberBetween(18, 25),
             'active' => $this->faker->boolean,
-            'image' => 'default.png',
+            'image' => $this->faker->image('public/assets/images', 640, 480, null, false),
         ];
     }
 }
