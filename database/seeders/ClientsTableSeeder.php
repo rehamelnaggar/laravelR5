@@ -12,6 +12,10 @@ class ClientsTableSeeder extends Seeder
      */
     public function run(): void
     {
+<<<<<<< HEAD
         Client::factory(20)->count(11)->create();
+=======
+        Client::factory()->count(11)->create();
+>>>>>>> 05fe32083b94d33c6580a1f2a880bb5816dab8f3
     }
 }

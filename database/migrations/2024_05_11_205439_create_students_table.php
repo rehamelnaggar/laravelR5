@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
+<<<<<<< HEAD
             $table->string('studentName', 100);
+=======
+            $table->string('studentName',100);
+>>>>>>> 05fe32083b94d33c6580a1f2a880bb5816dab8f3
             $table->integer('age');
             $table->boolean('active');
             $table->string('image', 100);
