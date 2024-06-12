@@ -17,15 +17,12 @@ return new class extends Migration
             $table->string('phone', 25);
             $table->string('email', 100);
             $table->string('website', 100);
-<<<<<<< HEAD
             $table->boolean('active');
             $table->string('image', 100);
             $table->foreignId('city_id')->constrained('cities');
-=======
             $table->string('city', 30);
             $table->boolean('active');
             $table->string('image', 100);
->>>>>>> 05fe32083b94d33c6580a1f2a880bb5816dab8f3
             $table->softDeletes();
             $table->timestamps();
         });

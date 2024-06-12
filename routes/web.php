@@ -10,11 +10,8 @@ Route::get('test20',[MyController::class,'my_data']);
 
 Route::post('insertClient',[ClientController::class,'store'])->name('insertClient');
 Route::get('addClient',[ClientController::class,'create'])->name('addClient');
-<<<<<<< HEAD
 Route::get('/clients', [ClientController::class, 'index'])->middleware('verified')->name('clients');
-=======
 Route::get('/clients', [ClientController::class, 'index'])->name('clients');
->>>>>>> 05fe32083b94d33c6580a1f2a880bb5816dab8f3
 Route::get('editClients/{id}',[ClientController::class, 'edit'])->name('editClients');
 Route::put('updateClients/{id}',[ClientController::class, 'update'])->name('updateClients');
 Route::get('showClients/{id}',[ClientController::class, 'show'])->name('showClient');
@@ -36,11 +33,10 @@ Route::delete('forceDeleteStudent', [StudentController::class, 'forceDelete'])->
 
 
 Route::get('/', function () {
-<<<<<<< HEAD
+
     return view('welcome');
-=======
+
     return view('stacked');
->>>>>>> 05fe32083b94d33c6580a1f2a880bb5816dab8f3
 });
 
 Route::get('reham/{id?}', function($id = 0){
@@ -70,11 +66,7 @@ Route::post('recForm1', [MyController::class,'receiveData'])->name('receiveForm1
 // Route::fallback(function(){
 //     // return 'The required is not found';
 //     return redirect('/');
-<<<<<<< HEAD
 // });
 Auth::routes(['verify'=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-=======
-// });
->>>>>>> 05fe32083b94d33c6580a1f2a880bb5816dab8f3
