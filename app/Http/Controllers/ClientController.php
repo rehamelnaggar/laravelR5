@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Client;
+use App\Models\Client; 
 use Illuminate\Support\Facades\Storage;
-use App\Traits\UploadFile;
+use App\Traits\UploadFile; 
 
 class ClientController extends Controller
 {
-    use UploadFile;
+    use UploadFile; 
 
     private $columns = ['clientName', 'phone', 'email', 'website', 'city_id', 'address', 'active', 'image'];
 
@@ -18,8 +18,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::all(); // Consider using pagination for large datasets
-        return view('clients', compact('clients'));
+        $clients = Client::paginate(10); // Using pagination for large datasets
+        return view('clients.index', compact('clients'));
     }
 
     /**
@@ -27,7 +27,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('addClient');
+        return view('clients.create');
     }
 
     /**
@@ -48,38 +48,40 @@ class ClientController extends Controller
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], $messages);
 
-        $fileName = $this->uploadImage($request->file('image'), 'assets/images');
+        if ($request->hasFile('image')) {
+            $fileName = $this->uploadImage($request->file('image'), 'assets/images');
+            $data['image'] = $fileName;
+        }
 
-        $data['image'] = $fileName;
         $data['active'] = $request->has('active') ? 1 : 0;
         
         Client::create($data);
 
-        return redirect('clients')->with('success', 'Client created successfully.');
+        return redirect()->route('clients.index')->with('success', 'Client created successfully.');
     }
 
     /**
-     * Show the specified resource.
+     * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
         $client = Client::findOrFail($id);
-        return view('showClient', compact('client'));
+        return view('clients.show', compact('client'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $client = Client::findOrFail($id);
-        return view('editClient', compact('client'));
+        return view('clients.edit', compact('client'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $data = $request->validate([
             'clientName' => 'required|max:100|min:5',
@@ -96,12 +98,11 @@ class ClientController extends Controller
 
         if ($request->hasFile('image')) {
             $fileName = $this->uploadImage($request->file('image'), 'assets/images');
+            $data['image'] = $fileName;
 
             if ($client->image) {
                 $this->deleteImage('assets/images/' . $client->image);
             }
-
-            $data['image'] = $fileName;
         } else {
             $data['image'] = $client->image;
         }
@@ -109,17 +110,23 @@ class ClientController extends Controller
         $data['active'] = $request->has('active') ? 1 : 0;
         $client->update($data);
 
-        return redirect('clients')->with('success', 'Client updated successfully.');
+        return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $id = $request->id;
-        Client::where('id', $id)->delete();
-        return redirect('clients')->with('success', 'Client deleted successfully.');
+        $client = Client::findOrFail($id);
+
+        if ($client->image) {
+            $this->deleteImage('assets/images/' . $client->image);
+        }
+
+        $client->delete();
+
+        return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
     }
 
     /**
@@ -128,26 +135,32 @@ class ClientController extends Controller
     public function trash()
     {
         $trash = Client::onlyTrashed()->get();
-        return view('trashClients', compact('trash'));
+        return view('clients.trash', compact('trash'));
     }
 
     /**
      * Restore the specified resource.
      */
-    public function restore(string $id)
+    public function restore($id)
     {
         Client::where('id', $id)->restore();
-        return redirect('clients')->with('success', 'Client restored successfully.');
+        return redirect()->route('clients.index')->with('success', 'Client restored successfully.');
     }
 
     /**
      * Permanently delete the specified resource.
      */
-    public function forceDelete(Request $request)
+    public function forceDelete($id)
     {
-        $id = $request->id;
-        Client::where('id', $id)->forceDelete();
-        return redirect('trashClients')->with('success', 'Client permanently deleted.');
+        $client = Client::withTrashed()->findOrFail($id);
+
+        if ($client->image) {
+            $this->deleteImage('assets/images/' . $client->image);
+        }
+
+        $client->forceDelete();
+
+        return redirect()->route('clients.trash')->with('success', 'Client permanently deleted.');
     }
 
     /**
