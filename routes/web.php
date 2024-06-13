@@ -73,3 +73,11 @@ Auth::routes(['verify'=>true]);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
  
 Route::get('/send-email',[\App\Http\Controllers\MailController::class,'sendEmail']);
+
+Route::get('mySession',[MyController::class,'myVal']);
+
+Route::get('restoreSession',[MyController::class,'restoreVal']);
+
+Route::get('deleteVal',[MyController::class,'deleteVal']);
+
+Route::get('sendClientMail',[MyController::class,'sendClientMail']);

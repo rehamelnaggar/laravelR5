@@ -6,14 +6,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-<<<<<<< HEAD
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
-=======
 
-class User extends Authenticatable
->>>>>>> 05fe32083b94d33c6580a1f2a880bb5816dab8f3
 {
     use HasFactory, Notifiable;
 
