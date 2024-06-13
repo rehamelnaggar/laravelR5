@@ -67,6 +67,9 @@ Route::post('recForm1', [MyController::class,'receiveData'])->name('receiveForm1
 //     // return 'The required is not found';
 //     return redirect('/');
 // });
+
 Auth::routes(['verify'=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+ 
+Route::get('/send-email',[\App\Http\Controllers\MailController::class,'sendEmail']);

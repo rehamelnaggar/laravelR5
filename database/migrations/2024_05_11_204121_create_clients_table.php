@@ -4,36 +4,37 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateClientsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('clientName', 100);
             $table->string('phone', 25);
             $table->string('email', 100);
             $table->string('website', 100);
-            $table->boolean('active');
+            $table->tinyInteger('active')->unsigned();
             $table->string('image', 100);
-            $table->foreignId('city_id')->constrained('cities');
+            $table->unsignedBigInteger('city_id');
             $table->string('city', 30);
-            $table->boolean('active');
-            $table->string('image', 100);
-            $table->softDeletes();
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('clients');
     }
-    //
-};
+}
