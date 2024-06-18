@@ -3,11 +3,11 @@
    Hello {{ $data['clientName']}},
 <br><br>
 </div>
- 
+
 <div >
-    {{$theMessage}}
+    {{$data['theMessage']}}
 </div>
- 
+
 Thanks,<br>
 {{ config('app.name') }}
 </x-mail::message>

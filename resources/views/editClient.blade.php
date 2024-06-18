@@ -81,6 +81,16 @@
             </div>
 
             <div class="form-group">
+                <label for="address">city:</label>
+                <p style="color: red">
+                    @error('city')
+                        {{ $message }}
+                    @enderror
+                </p>
+                <input type="text" id="city" name="city" class="form-control" value="{{ $client->city }}" required>
+            </div>
+
+            <div class="form-group">
                 <label for="city">City:</label>
                 <p style="color: red">
                     @error('city')

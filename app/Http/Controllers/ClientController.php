@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Client; 
+use App\Models\Client;
 use Illuminate\Support\Facades\Storage;
-use App\Traits\UploadFile; 
+use App\Traits\UploadFile;
 
 class ClientController extends Controller
 {
-    use UploadFile; 
+    use UploadFile;
 
     private $columns = ['clientName', 'phone', 'email', 'website', 'city_id', 'address', 'active', 'image'];
 
@@ -27,7 +27,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('clients.create');
+        return view('addClient');
     }
 
     /**
@@ -35,18 +35,16 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $messages = $this->errMsg();
-        
         $data = $request->validate([
             'clientName' => 'required|max:100|min:5',
             'phone' => 'required|min:11',
             'email' => 'required|email',
-            'website' => 'nullable|url|max:255',
+            'website' => 'nullable|url|max:255', // Validate as URL and limit length
             'address' => 'required|max:255',
             'city_id' => 'required|exists:cities,id',
             'active' => 'boolean',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], $messages);
+        ], $this->errMsg());
 
         if ($request->hasFile('image')) {
             $fileName = $this->uploadImage($request->file('image'), 'assets/images');
@@ -54,7 +52,7 @@ class ClientController extends Controller
         }
 
         $data['active'] = $request->has('active') ? 1 : 0;
-        
+
         Client::create($data);
 
         return redirect()->route('clients.index')->with('success', 'Client created successfully.');
@@ -92,27 +90,22 @@ class ClientController extends Controller
             'city_id' => 'required|exists:cities,id',
             'active' => 'boolean',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $client = Client::findOrFail($id);
-
+        ], $this->errMsg());
+    
+        // Handle file upload if image exists
         if ($request->hasFile('image')) {
             $fileName = $this->uploadImage($request->file('image'), 'assets/images');
             $data['image'] = $fileName;
-
-            if ($client->image) {
-                $this->deleteImage('assets/images/' . $client->image);
-            }
-        } else {
-            $data['image'] = $client->image;
         }
-
+    
+        // Convert 'active' checkbox value to boolean
         $data['active'] = $request->has('active') ? 1 : 0;
-        $client->update($data);
-
-        return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
+    
+        // Create new client record
+        $client = Client::create($data);
+    
+        return redirect()->route('clients.index')->with('success', 'Client created successfully.');
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -176,9 +169,11 @@ class ClientController extends Controller
             'phone.min' => 'The phone number must be at least :min digits.',
             'email.required' => 'The email address is required.',
             'email.email' => 'The email address must be a valid email address.',
-            'website.url' => 'The website must be a valid URL.',
+            'website.url' => 'The website must be a valid URL.', 
             'website.max' => 'The website may not be greater than :max characters.',
             'address.required' => 'The address is required.',
+            'city.max' => 'The city may not be greater than :max characters.',
+            'city.required' => 'The city is required.',
             'address.max' => 'The address may not be greater than :max characters.',
             'city_id.required' => 'The city is required.',
             'city_id.exists' => 'The selected city is invalid.',

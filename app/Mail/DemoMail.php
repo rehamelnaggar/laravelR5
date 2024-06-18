@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
 
-class ContactClient extends Mailable
+class DemoMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,8 +28,8 @@ class ContactClient extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('info@unw.com', 'UNW Training'),
-            subject: 'UNW Test Email Template',
+            from: new Address('info@example.com', 'UNW Test'),
+            subject: 'Send Email Example',
         );
     }
 
@@ -39,7 +39,7 @@ class ContactClient extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.mailToClient',
+            markdown: 'emails.general_email',
             with:[
                 'data'=>$this->data,
             ]

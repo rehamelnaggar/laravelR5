@@ -7,19 +7,18 @@ use App\Http\Controllers\StudentController;
 use App\Models\Student;
 
 Route::get('test20',[MyController::class,'my_data']);
-
-Route::post('insertClient',[ClientController::class,'store'])->name('insertClient');
-Route::get('addClient',[ClientController::class,'create'])->name('addClient');
-Route::get('/clients', [ClientController::class, 'index'])->middleware('verified')->name('clients');
-Route::get('/clients', [ClientController::class, 'index'])->name('clients');
-Route::get('editClients/{id}',[ClientController::class, 'edit'])->name('editClients');
-Route::put('updateClients/{id}',[ClientController::class, 'update'])->name('updateClients');
-Route::get('showClients/{id}',[ClientController::class, 'show'])->name('showClient');
-Route::delete('delClient',[ClientController::class, 'destroy'])->name('delClient');
-Route::get('trashClients',[ClientController::class, 'trash'])->name('trashClient');
-Route::get('restoreClients/{id}',[ClientController::class, 'restore'])->name('restoreClients');
-Route::delete('forceDeleteClient',[ClientController::class, 'forceDelete'])->name('foceDelete');
-
+//clients
+Route::post('insertClient', [ClientController::class, 'store'])->name('insertClient');
+Route::get('addClient', [ClientController::class, 'create'])->name('addClient');
+Route::get('clients', [ClientController::class, 'index'])->middleware('verified')->name('clients');
+Route::get('editClients/{id}', [ClientController::class, 'edit'])->name('editClients');
+Route::put('updateClients/{id}', [ClientController::class, 'update'])->name('updateClients');
+Route::get('showClients/{id}', [ClientController::class, 'show'])->name('showClient');
+Route::delete('delClient', [ClientController::class, 'destroy'])->name('delClient');
+Route::get('trashClients', [ClientController::class, 'trash'])->name('trashClient');
+Route::get('restoreClients/{id}', [ClientController::class, 'restore'])->name('restoreClients');
+Route::delete('forceDeleteClient', [ClientController::class, 'forceDelete'])->name('forceDelete');
+//students
 Route::post('insertStudent',[StudentController::class,'store'])->name('insertStudent');
 Route::get('addStudent',[StudentController::class,'create'])->name('addStudent');
 Route::get('/students', [StudentController::class, 'index'])->name('students');
@@ -71,13 +70,15 @@ Route::post('recForm1', [MyController::class,'receiveData'])->name('receiveForm1
 Auth::routes(['verify'=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
- 
+//mailhogtask
 Route::get('/send-email',[\App\Http\Controllers\MailController::class,'sendEmail']);
+//mailhogsession13
+Route::get('genEmail', [MyController::class,'generalMail']);
 
-Route::get('mySession',[MyController::class,'myVal']);
+Route::get('mySession', [MyController::class,'myVal']);
 
-Route::get('restoreSession',[MyController::class,'restoreVal']);
+Route::get('restoreSession', [MyController::class,'restoreVal']);
 
-Route::get('deleteVal',[MyController::class,'deleteVal']);
+Route::get('deleteVal', [MyController::class,'deleteVal']);
 
-Route::get('sendClientMail',[MyController::class,'sendClientMail']);
+Route::get('sendClientMail', [MyController::class,'sendClientMail']);

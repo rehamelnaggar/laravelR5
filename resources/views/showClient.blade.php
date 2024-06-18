@@ -8,13 +8,15 @@
 <body>
     <h1><strong>Client: </strong>{{ $client->clientName }}</h1>
     <hr>
-    <h1><strong>Client: </strong>{{ $client->phone }}</h1>
+    <h1><strong>Phone: </strong>{{ $client->phone }}</h1>
     <hr>
-    <h1><strong>Client: </strong>{{ $client->email }}</h1>
+    <h1><strong>Email: </strong>{{ $client->email }}</h1>
     <hr>
-    <h1><strong>Client: </strong>{{ $client->website }}</h1>
+    <h1><strong>Website: </strong>{{ $client->website }}</h1>
     <hr>
-    <h1><strong>Client: </strong>{{ $client->address }}</h1>
+    <h1><strong>Address: </strong>{{ $client->address }}</h1>
+    <hr>
+    <h1><strong>City: </strong>{{ $client->city }}</h1>
     <hr>
     <p><img src="{{ asset('assets/images/'.$client->image) }}" alt=""></p>
 
