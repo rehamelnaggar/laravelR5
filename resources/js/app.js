@@ -1,1 +1,2 @@
-import './bootstrap';
+// Bootstrap JS
+import 'bootstrap/dist/js/bootstrap.bundle';

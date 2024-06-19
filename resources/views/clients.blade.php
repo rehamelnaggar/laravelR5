@@ -9,7 +9,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-  @include('includes.nav')
+  @include('includes.nav') 
   <div class="container">
     <h2>Clients Data</h2>
     <table class="table table-hover">
@@ -19,8 +19,8 @@
           <th>Phone</th>
           <th>Email</th>
           <th>Website</th>
-          <th>address</th>
-          <th>city</th>
+          <th>Address</th>
+          <th>City</th>
           <th>Image</th>
           <th>Active</th>
           <th>Edit</th>
@@ -47,10 +47,10 @@
           <td>{{ $client->active ? "Yes" : "No" }}</td>
           <td><a href="{{ route('editClients', $client->id) }}" class="btn btn-warning">Edit</a></td>
           <td><a href="{{ route('showClient', $client->id) }}" class="btn btn-info">Show</a></td>
-          <td><form action="{{ route('delClient') }}" method="post">
+          <td>
+            <form action="{{ route('delClient', $client->id) }}" method="post">
               @csrf
               @method('DELETE')
-              <input type="hidden" value="{{ $client->id }}" name="id">
               <input type="submit" onclick="return confirm('Are you sure to delete?')" value="Delete" class="btn btn-danger">
             </form>
           </td>
@@ -58,6 +58,7 @@
         @endforeach
       </tbody>
     </table>
+    {{ $clients->links() }} 
   </div>
 </body>
 </html>

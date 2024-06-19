@@ -13,42 +13,23 @@ class ClientController extends Controller
 
     private $columns = ['clientName', 'phone', 'email', 'website', 'city_id', 'address', 'active', 'image'];
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $clients = Client::paginate(10); // Using pagination for large datasets
-        return view('clients.index', compact('clients'));
+        $clients = Client::paginate(10);
+        return view('clients', compact('clients'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('addClient');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'clientName' => 'required|max:100|min:5',
-            'phone' => 'required|min:11',
-            'email' => 'required|email',
-            'website' => 'nullable|url|max:255', // Validate as URL and limit length
-            'address' => 'required|max:255',
-            'city_id' => 'required|exists:cities,id',
-            'active' => 'boolean',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], $this->errMsg());
+        $data = $this->validateRequest($request);
 
         if ($request->hasFile('image')) {
-            $fileName = $this->uploadImage($request->file('image'), 'assets/images');
-            $data['image'] = $fileName;
+            $data['image'] = $this->uploadImage($request->file('image'), 'assets/images');
         }
 
         $data['active'] = $request->has('active') ? 1 : 0;
@@ -58,57 +39,37 @@ class ClientController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $client = Client::findOrFail($id);
         return view('clients.show', compact('client'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $client = Client::findOrFail($id);
         return view('clients.edit', compact('client'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-        $data = $request->validate([
-            'clientName' => 'required|max:100|min:5',
-            'phone' => 'required|min:11',
-            'email' => 'required|email',
-            'website' => 'nullable|url|max:255',
-            'address' => 'required|max:255',
-            'city_id' => 'required|exists:cities,id',
-            'active' => 'boolean',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], $this->errMsg());
-    
-        // Handle file upload if image exists
+        $client = Client::findOrFail($id);
+        $data = $this->validateRequest($request);
+
         if ($request->hasFile('image')) {
-            $fileName = $this->uploadImage($request->file('image'), 'assets/images');
-            $data['image'] = $fileName;
+            if ($client->image) {
+                $this->deleteImage('assets/images/' . $client->image);
+            }
+            $data['image'] = $this->uploadImage($request->file('image'), 'assets/images');
         }
-    
-        // Convert 'active' checkbox value to boolean
+
         $data['active'] = $request->has('active') ? 1 : 0;
-    
-        // Create new client record
-        $client = Client::create($data);
-    
-        return redirect()->route('clients.index')->with('success', 'Client created successfully.');
+
+        $client->update($data);
+
+        return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
     }
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy($id)
     {
         $client = Client::findOrFail($id);
@@ -122,27 +83,18 @@ class ClientController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
     }
 
-    /**
-     * Display a listing of trashed resources.
-     */
     public function trash()
     {
-        $trash = Client::onlyTrashed()->get();
-        return view('clients.trash', compact('trash'));
+        $clients = Client::onlyTrashed()->paginate(10);
+        return view('clients.trash', compact('clients'));
     }
 
-    /**
-     * Restore the specified resource.
-     */
     public function restore($id)
     {
-        Client::where('id', $id)->restore();
+        Client::withTrashed()->where('id', $id)->restore();
         return redirect()->route('clients.index')->with('success', 'Client restored successfully.');
     }
 
-    /**
-     * Permanently delete the specified resource.
-     */
     public function forceDelete($id)
     {
         $client = Client::withTrashed()->findOrFail($id);
@@ -156,9 +108,20 @@ class ClientController extends Controller
         return redirect()->route('clients.trash')->with('success', 'Client permanently deleted.');
     }
 
-    /**
-     * Custom error messages for validation.
-     */
+    private function validateRequest(Request $request)
+    {
+        return $request->validate([
+            'clientName' => 'required|max:100|min:5',
+            'phone' => 'required|min:11',
+            'email' => 'required|email',
+            'website' => 'nullable|url|max:255',
+            'address' => 'required|max:255',
+            'city_id' => 'required|exists:cities,id',
+            'active' => 'boolean',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], $this->errMsg());
+    }
+
     public function errMsg()
     {
         return [
@@ -169,12 +132,9 @@ class ClientController extends Controller
             'phone.min' => 'The phone number must be at least :min digits.',
             'email.required' => 'The email address is required.',
             'email.email' => 'The email address must be a valid email address.',
-            'website.url' => 'The website must be a valid URL.', 
+            'website.url' => 'The website must be a valid URL.',
             'website.max' => 'The website may not be greater than :max characters.',
             'address.required' => 'The address is required.',
-            'city.max' => 'The city may not be greater than :max characters.',
-            'city.required' => 'The city is required.',
-            'address.max' => 'The address may not be greater than :max characters.',
             'city_id.required' => 'The city is required.',
             'city_id.exists' => 'The selected city is invalid.',
             'active.boolean' => 'The active status must be true or false.',
