@@ -14,6 +14,7 @@ class ContactMail extends Mailable
 
     public $name;
     public $email;
+    public $subject;
     public $message;
 
     /**
@@ -26,6 +27,7 @@ class ContactMail extends Mailable
     {
         $this->name = $request->name;
         $this->email = $request->email;
+        $this->subject = $request->subject;
         $this->message = $request->message;
     }
 
@@ -38,6 +40,6 @@ class ContactMail extends Mailable
     {
         return $this->from($this->email, $this->name)
                     ->subject('Contact Form Submission')
-                    ->view('emails.contact');  
+                    ->view('emails.contact');
     }
 }
