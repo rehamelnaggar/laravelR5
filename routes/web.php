@@ -9,6 +9,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ContactController;
 use App\Models\Student;
 
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+    ], function(){
 // Routes 
 Route::get('test20', [MyController::class, 'my_data']);
 
@@ -91,3 +96,5 @@ Route::get('sendClientMail', [MyController::class, 'sendClientMail']);
 //contact
 Route::get('contact', [ContactController::class, 'create'])->name('contact.create');
 Route::post('contact', [ContactController::class, 'send'])->name('contact.send');
+
+});
