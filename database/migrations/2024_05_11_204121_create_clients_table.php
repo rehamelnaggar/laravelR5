@@ -18,11 +18,11 @@ class CreateClientsTable extends Migration
             $table->string('clientName', 100);
             $table->string('phone', 25);
             $table->string('email', 100);
-            $table->string('website', 100);
-            $table->tinyInteger('active')->unsigned();
-            $table->string('image', 100);
+            $table->string('website', 100)->nullable();
+            $table->boolean('active')->default(false);
+            $table->string('image', 100)->nullable();
             $table->unsignedBigInteger('city_id');
-            $table->string('city', 30);
+            $table->foreign('city_id')->references('id')->on('cities');
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });

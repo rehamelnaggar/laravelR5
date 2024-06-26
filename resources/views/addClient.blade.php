@@ -55,14 +55,13 @@
       </div>
 
       <div class="form-group">
-  <label for="website">Website:</label><br>
-  <p style="color:red">
-    @error('website')
-    <p style="color:red">{{ $message }}</p>
-    @enderror
-  </p>
-  <input type="url" id="website" name="website" class="form-control" value="{{ old('website') }}" pattern="https?://.*">
-</div>
+        <label for="website">Website:</label><br>
+        <input type="url" id="website" name="website" class="form-control" value="{{ old('website') }}" pattern="https?://.*">
+        @error('website')
+          <p style="color:red">{{ $message }}</p>
+        @enderror
+      </div>
+
       <div class="form-group">
         <label for="address">Address:</label>
         <input type="text" id="address" name="address" class="form-control" value="{{ old('address') }}" required>

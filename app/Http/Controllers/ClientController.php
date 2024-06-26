@@ -13,17 +13,33 @@ class ClientController extends Controller
 
     private $columns = ['clientName', 'phone', 'email', 'website', 'city_id', 'address', 'active', 'image'];
 
+    /**
+     * Display a listing of the clients.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $clients = Client::paginate(10);
         return view('clients', compact('clients'));
     }
 
+    /**
+     * Show the form for creating a new client.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
         return view('addClient');
     }
 
+    /**
+     * Store a newly created client in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $data = $this->validateRequest($request);
@@ -39,18 +55,37 @@ class ClientController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client created successfully.');
     }
 
+    /**
+     * Display the specified client.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
         $client = Client::findOrFail($id);
         return view('clients.show', compact('client'));
     }
 
+    /**
+     * Show the form for editing the specified client.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function edit($id)
     {
         $client = Client::findOrFail($id);
         return view('clients.edit', compact('client'));
     }
 
+    /**
+     * Update the specified client in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
         $client = Client::findOrFail($id);
@@ -70,6 +105,12 @@ class ClientController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
     }
 
+    /**
+     * Remove the specified client from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         $client = Client::findOrFail($id);
@@ -83,18 +124,35 @@ class ClientController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
     }
 
+    /**
+     * Display a listing of soft-deleted clients.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function trash()
     {
         $clients = Client::onlyTrashed()->paginate(10);
         return view('clients.trash', compact('clients'));
     }
 
+    /**
+     * Restore the specified soft-deleted client.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function restore($id)
     {
         Client::withTrashed()->where('id', $id)->restore();
         return redirect()->route('clients.index')->with('success', 'Client restored successfully.');
     }
 
+    /**
+     * Permanently delete the specified soft-deleted client.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function forceDelete($id)
     {
         $client = Client::withTrashed()->findOrFail($id);
@@ -108,6 +166,12 @@ class ClientController extends Controller
         return redirect()->route('clients.trash')->with('success', 'Client permanently deleted.');
     }
 
+    /**
+     * Validate the request data.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
     private function validateRequest(Request $request)
     {
         return $request->validate([
@@ -122,6 +186,11 @@ class ClientController extends Controller
         ], $this->errMsg());
     }
 
+    /**
+     * Error messages for validation.
+     *
+     * @return array
+     */
     public function errMsg()
     {
         return [
