@@ -12,7 +12,10 @@
             @stack('submenu')
             <li><a href="#">{{ __('messages.page_2') }}</a></li>
             <li><a href="#">{{ __('messages.page_3') }}</a></li>
+            <li class="col-md-6"></li>
+            <li><a href="{{ route('facebookRedirect') }}">Login with facebook</a></li>
         </ul>
+       
         <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ LaravelLocalization::getLocalizedURL('en') }}">English</a></li>
             <li><a href="{{ LaravelLocalization::getLocalizedURL('ar') }}">العربية</a></li>

@@ -96,5 +96,12 @@ Route::get('sendClientMail', [MyController::class, 'sendClientMail']);
 //contact
 Route::get('contact', [ContactController::class, 'create'])->name('contact.create');
 Route::post('contact', [ContactController::class, 'send'])->name('contact.send');
-
 });
+
+Route::get('/auth/redirect', function () {
+    return Socialite::driver('facebook')->redirect();
+})->name('facebookRedirect');
+Route::get('/auth/callback', function () {
+   $user = Socialite::driver('facebook')->user();
+});
+

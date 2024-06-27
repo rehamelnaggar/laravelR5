@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Console\Commands;
-
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseBackup extends Command
 {
@@ -27,25 +28,19 @@ class DatabaseBackup extends Command
      */
     public function handle()
     {
-        // Database configuration
-        $dbHost = config('database.connections.mysql.host');
-        $dbUsername = config('database.connections.mysql.username');
-        $dbPassword = config('database.connections.mysql.password');
-        $dbName = config('database.connections.mysql.database');
-        
-        // Backup path
-        $backupPath = storage_path('app/backups/' . date('Y-m-d_H-i-s') . '.sql');
-
-        // Create directory if it does not exist
-        if (!file_exists(dirname($backupPath))) {
-            mkdir(dirname($backupPath), 0777, true);
+        if (! Storage::exists('backup')) {
+            Storage::makeDirectory('backup');
         }
-
-        // Execute the mysqldump command
-        $command = "mysqldump --host={$dbHost} --user={$dbUsername} --password={$dbPassword} {$dbName} > {$backupPath}";
-        exec($command);
-
-        // Output message
-        $this->info('Database backup completed successfully.');
+ 
+        $filename = "backup-" . Carbon::now()->format('Y-m-d') . ".gz";
+    
+        $command = "mysqldump --user=" . env('DB_USERNAME') ." --password=" . env('DB_PASSWORD')
+                . " --host=" . env('DB_HOST') . " " . env('DB_DATABASE') 
+                . "  | gzip > " . storage_path() . "/app/backup/" . $filename;
+ 
+        $returnVar = NULL;
+        $output  = NULL;
+ 
+        exec($command, $output, $returnVar);
     }
 }
